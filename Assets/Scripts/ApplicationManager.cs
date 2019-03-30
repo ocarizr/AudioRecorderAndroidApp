@@ -62,7 +62,7 @@ namespace Assets.Scripts
                     SelectionManager.Instance.Clear();
                     _startTime = Time.time;
                     Microphone.GetDeviceCaps("", out int minFreq, out int maxFreq);
-                    _recordedClip = Microphone.Start("", false, MaxClipTime, maxFreq);
+                    _recordedClip = Microphone.Start("", false, MaxClipTime, minFreq);
                     AudioRecordButton.GetComponent<Image>().sprite = StopIcon;
                 }
             }

@@ -12,6 +12,7 @@ namespace Assets.Scripts.Data
     {
         public List<AudioClipData> Items;
         public static string DbPath;
+
         private void Awake()
         {
             if (Instance == null) Instance = this;
@@ -38,6 +39,29 @@ namespace Assets.Scripts.Data
             }
         }
 
+        public void SaveRecordedAudio(AudioClipData clipData)
+        {
+            using (var connection = new SqliteConnection($"Data Source= {DbPath}"))
+            {
+                string data = DataConverter.Instance.DataToString(clipData);
+                StringBuilder query = new StringBuilder();
+                query.Append("INSERT INTO AudioDB(Id, ClipData) ");
+                query.Append("VALUES (");
+                query.Append(Items.Count);
+                query.Append(", '");
+                query.Append(data);
+                query.Append("')");
+
+                using (var cmd = new SqliteCommand(query.ToString(), connection))
+                {
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    Items.Add(clipData);
+                    print(Items);
+                }
+            }
+        }
+
         private void PopulateItems()
         {
             using (var connection = new SqliteConnection($"Data Source= {DbPath}"))
@@ -50,33 +74,11 @@ namespace Assets.Scripts.Data
                     {
                         while (reader.Read())
                         {
-                            var item = JsonUtility.FromJson<AudioClipData>(reader.GetValue(1) as string); // alterar para BinaryFomatter
+                            var item = DataConverter.Instance.StringToData(reader.GetValue(1) as string);
                             Items.Add(item);
                             ApplicationManager.Instance.ItemList.AddFromDatabase(item);
                         }
                     }
-                }
-            }
-        }
-
-        public void SaveRecordedAudio(AudioClipData clipData)
-        {
-            using (var connection = new SqliteConnection($"Data Source= {DbPath}"))
-            {
-                string data = JsonUtility.ToJson(clipData); // alterar para BinaryFormatter
-                StringBuilder query = new StringBuilder();
-                query.Append("INSERT INTO AudioDB(Id, ClipData) ");
-                query.Append("VALUES (");
-                query.Append(Items.Count);
-                query.Append(", ");
-                query.Append(data);
-                query.Append(")");
-
-                using (var cmd = new SqliteCommand(query.ToString(), connection))
-                {
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    Items.Add(clipData);
                 }
             }
         }

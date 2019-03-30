@@ -23,7 +23,7 @@ namespace Assets.Scripts
 
         private AudioSource _speaker;
 
-        private void Awake()
+        private void Start()
         {
             ItemLabel.text = ClipData.ClipName;
             _speaker = GetComponent<AudioSource>();
@@ -65,7 +65,7 @@ namespace Assets.Scripts
             }
             else
             {
-                _speaker.PlayOneShot(ClipData.Clip);
+                _speaker.PlayOneShot(ClipData.GetClip());
                 PlayIcon.gameObject.SetActive(false);
                 PauseIcon.gameObject.SetActive(true);
             }

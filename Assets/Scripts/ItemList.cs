@@ -8,7 +8,7 @@ namespace Assets.Scripts
     {
         public GameObject ItemPrefab;
 
-        private AudioItem _item;
+        //private AudioItem _item;
         private AudioClipData _data;
 
         public List<AudioItem> Items { get; private set; }
@@ -16,7 +16,7 @@ namespace Assets.Scripts
         private void Awake()
         {
             Items = new List<AudioItem>();
-            _item = ItemPrefab.GetComponent<AudioItem>();
+            //_item = ItemPrefab.GetComponent<AudioItem>();
         }
 
         public void AddNewItem(AudioClipData data)
@@ -34,9 +34,9 @@ namespace Assets.Scripts
 
         private void AddItem()
         {
-            _item.ClipData = _data;
-            Items.Add(_item);
             Instantiate(ItemPrefab, transform);
+            ItemPrefab.GetComponent<AudioItem>().ClipData = _data;
+            Items.Add(ItemPrefab.GetComponent<AudioItem>());
         }
     }
 }
